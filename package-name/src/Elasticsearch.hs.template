@@ -17,7 +17,7 @@ import qualified Data.Text         as T
 import Models                      ($moduleName(..), runDb)
 import Config                      (Config, esEnv)
 
-data $moduleNameMapping = $moduleNameMapping deriving (Eq, Show, Generic)
+data ${module}NameMapping = ${moduleName}Mapping deriving (Eq, Show, Generic)
 
 instance FromJSON $moduleNameMapping 
 instance ToJSON  $moduleNameMapping
