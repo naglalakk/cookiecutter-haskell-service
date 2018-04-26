@@ -50,10 +50,6 @@ data Config
         , esEnv         :: BHEnv             -- ^ Bloodhound (Elasticsearch) environment
     }
 
--- | MonadLogger instance to use within @AppT m@
--- instance MonadIO m => MonadLogger (AppT m) where
---    monadLoggerLog = adapt logMsg
-
 -- | Right now, we're distinguishing between three environments. We could
 -- also add a @Staging@ environment if we needed to.
 data Environment
