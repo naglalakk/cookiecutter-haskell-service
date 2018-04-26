@@ -37,7 +37,7 @@ convertApp cfg = runReaderTNat cfg <<< NT runApp
 -- two different APIs and applications. This is a powerful tool for code
 -- reuse and abstraction! We need to put the 'Raw' endpoint last, since it
 -- always succeeds.
-type AppAPI = ${modulename}API :<|> Raw
+type AppAPI = ${moduleName}API :<|> Raw
 
 appApi :: Proxy AppAPI
 appApi = Proxy
