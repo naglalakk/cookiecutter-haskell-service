@@ -22,7 +22,7 @@ registrationApp cfg = serve (Proxy :: Proxy ${moduleName}API) (appToServer cfg)
 -- | This functions tells Servant how to run the 'App' monad with our
 -- 'server' function. @NT 'Handler'@ is a natural transformation that
 -- effectively specialises app base monad to IO
-appToServer :: Config -> Server RegistrationAPI 
+appToServer :: Config -> Server ${moduleName}API 
 appToServer cfg = enter (convertApp cfg >>> NT Handler) serviceServer
 
 -- | This function converts our @'AppT' m@ monad into the @ExceptT ServantErr
