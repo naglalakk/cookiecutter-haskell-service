@@ -20,14 +20,14 @@ formatStr path host method status req res =
 responseBody :: Response -> IO ByteString
 responseBody res =
     let (status,headers,body) = responseToStream res in
-    body $ \f -> do
+    body $$ \f -> do
         content <- newIORef mempty
         f (\chunk -> modifyIORef' content (<> chunk)) (return ())
-        toLazyByteString <$> readIORef content
+        toLazyByteString <$$> readIORef content
 
 apiFileLogger :: Middleware
 apiFileLogger app req sendResponse = do
-    app req $ \rsp -> do
+    app req $$ \rsp -> do
         let (status, headers, _) = responseToStream rsp
         let sCode = statusCode status
         rBody <- (strictRequestBody req)
