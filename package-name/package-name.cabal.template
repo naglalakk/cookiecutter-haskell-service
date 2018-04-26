@@ -1,0 +1,102 @@
+-- This file has been generated from package.yaml by hpack version 0.20.0.
+--
+-- see: https://github.com/sol/hpack
+--
+-- hash: 610e183c17f9c9f5d589bf3ea0afee08e29253c9d0e2faa9c3485a18630572ce
+
+name:           registration-service
+version:        0.0.1.0
+synopsis:       Registration service for sumargledi.is
+description:    Registration service for sumargledi.is
+category:       Web
+author:         Thordur Hermannsson
+maintainer:     doddi@kott.is
+copyright:      2018 Thordur Hermannsson
+license:        MIT
+license-file:   LICENSE
+build-type:     Simple
+cabal-version:  >= 1.10
+
+source-repository head
+  type: git
+  location: https://www.github.com/K0TT/registration-service
+
+library
+  hs-source-dirs:
+      src
+  ghc-options: -fwarn-unused-imports
+  build-depends:
+      aeson
+    , aeson-better-errors
+    , base >=4.9 && <5.0
+    , bloodhound
+    , bytestring
+    , containers
+    , dotenv
+    , ekg
+    , ekg-core
+    , fast-logger
+    , hslogger
+    , http-client
+    , http-types
+    , katip >=0.5.0.2 && <0.6
+    , microlens
+    , monad-control
+    , monad-logger
+    , monad-metrics
+    , mtl
+    , persistent
+    , persistent-postgresql
+    , persistent-template
+    , servant
+    , servant-server
+    , text
+    , time
+    , transformers
+    , unordered-containers
+    , uuid
+    , wai
+    , wai-cors
+    , wai-extra
+    , wai-middleware-metrics
+    , warp
+  exposed-modules:
+      Config
+      Models
+      Api
+      Api.Registration
+      Elasticsearch
+      Logger
+  other-modules:
+      Paths_registration_service
+  default-language: Haskell2010
+
+executable registration-service
+  main-is: Main.hs
+  hs-source-dirs:
+      app
+  ghc-options: -fwarn-unused-imports
+  build-depends:
+      aeson-better-errors
+    , base >=4.9 && <5.0
+    , dotenv
+    , ekg
+    , ekg-core
+    , fast-logger
+    , hslogger
+    , http-types
+    , microlens
+    , monad-logger
+    , monad-metrics
+    , mtl
+    , persistent-postgresql
+    , registration-service
+    , safe
+    , wai
+    , wai-cors
+    , wai-extra
+    , wai-middleware-metrics
+    , warp
+  other-modules:
+      Paths_registration_service
+  default-language: Haskell2010

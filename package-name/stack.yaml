@@ -1,0 +1,7 @@
+flags: {}
+packages:
+- '.'
+extra-deps:
+- servant-options-0.1.0.0
+resolver: lts-10.5
+allow-newer: true

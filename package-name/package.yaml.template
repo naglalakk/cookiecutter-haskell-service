@@ -1,0 +1,62 @@
+name: $packageName
+version: '0.0.0.1'
+synopsis: $moduleName service
+description: $moduleName Service
+category: Web
+author: $author <$email>
+maintainer: $author <$email>
+copyright: 2018 $author
+license: MIT
+git: https://www.github.com/K0TT/$packageName
+dependencies:
+- persistent-postgresql
+- dotenv
+- wai-extra
+- wai-cors
+- mtl
+- hslogger
+- fast-logger
+- http-types
+library:
+  source-dirs: src
+  ghc-options: -fwarn-unused-imports
+  exposed-modules:
+  - Config
+  - Models
+  - Api
+  - Api.$moduleName
+  - Elasticsearch
+  - Logger
+  dependencies:
+  - base >=4.9 && <5.0
+  - aeson
+  - bloodhound
+  - bytestring
+  - http-client
+  - http-types
+  - monad-control
+  - monad-logger
+  - persistent
+  - persistent-template
+  - servant
+  - servant-server
+  - transformers
+  - wai
+  - warp
+  - text
+  - containers
+  - fast-logger
+  - unordered-containers
+  - time
+executables:
+  $packageName:
+    main: Main.hs
+    source-dirs: app
+    ghc-options: -fwarn-unused-imports
+    dependencies:
+    - $packageName
+    - base >=4.9 && <5.0
+    - wai
+    - warp
+    - monad-logger
+    - safe

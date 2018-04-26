@@ -1,0 +1,19 @@
+{-# LANGUAGE DataKinds         #-}
+{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE TypeOperators     #-}
+{-# LANGUAGE DeriveGeneric     #-}
+
+module Api.$moduleName where
+
+import Servant
+
+import Config                      (AppT (..))
+
+type $moduleNameAPI = "test" :> GET '[JSON] String
+
+serviceServer :: MonadIO m => ServerT $moduleNameAPI (AppT m)
+serviceServer = testEndpoint
+
+testEndpoint :: AppT m String
+testEndpoint = return "Hello World"
+

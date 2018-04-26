@@ -1,0 +1,24 @@
+version: '3'
+services:
+    api:
+        build: .
+        command: sh -c "./config/wait-for-it.sh db:5432 -- ./config/wait-for-it.sh elasticsearch:9200 -- $moduleName"
+        ports:
+            - "8081:8081"
+        depends_on:
+            - db
+            - elasticsearch
+        env_file: .env.production
+        volumes:
+            - ./logs:/code/logs
+    db:
+        image: postgres
+        volumes:
+            - db-data:/var/lib/postgresql/data
+        env_file: .env.production
+    elasticsearch:
+        image: elasticsearch:5.0
+        ports:
+            - "9200:9200"
+volumes:
+    db-data:
