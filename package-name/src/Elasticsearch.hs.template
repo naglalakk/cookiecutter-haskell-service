@@ -17,10 +17,10 @@ import qualified Data.Text         as T
 import Models                      ($moduleName(..), runDb)
 import Config                      (Config, esEnv)
 
-data ${module}NameMapping = ${moduleName}Mapping deriving (Eq, Show, Generic)
+data ${moduleName}Mapping = ${moduleName}Mapping deriving (Eq, Show, Generic)
 
-instance FromJSON $moduleNameMapping 
-instance ToJSON  $moduleNameMapping
+instance FromJSON ${moduleName}Mapping 
+instance ToJSON  ${moduleName}Mapping
 
 indexSettings :: IndexSettings
 indexSettings = defaultIndexSettings
@@ -38,15 +38,15 @@ destroyIndex :: (MonadReader Config m, MonadIO m) => m Reply
 destroyIndex = runES $$ deleteIndex indexName
 
 makeMapping :: (MonadReader Config m, MonadIO m) => m Reply
-makeMapping = runES $$ putMapping indexName mappingName $moduleNameMapping 
+makeMapping = runES $$ putMapping indexName mappingName ${moduleName}Mapping 
 
-put$moduleName :: (MonadReader Config m, MonadIO m) => $moduleName -> T.Text -> m Reply
-put$moduleName object dID = do
-    reply <- get$moduleName dID
+put${moduleName} :: (MonadReader Config m, MonadIO m) => $moduleName -> T.Text -> m Reply
+put${moduleName} object dID = do
+    reply <- get${moduleName} dID
     let sCode = statusCode $$ responseStatus reply
     case sCode of
       -- update
-      200 -> update$moduleName object dID
+      200 -> update${moduleName} object dID
       -- create
       404 -> runES $$ 
              indexDocument 
@@ -55,27 +55,27 @@ put$moduleName object dID = do
              defaultIndexDocumentSettings 
              object $$ DocId dID
 
-update$moduleName :: (MonadReader Config m, MonadIO m) => Registration -> T.Text -> m Reply
-update$moduleName object dID = runES $$ 
+update${moduleName} :: (MonadReader Config m, MonadIO m) => Registration -> T.Text -> m Reply
+update${moduleName} object dID = runES $$ 
                                updateDocument 
                                indexName 
                                mappingName 
                                defaultIndexDocumentSettings 
                                object $$ DocId dID
 
-all$moduleNames :: (MonadReader Config m, MonadIO m) => m [Entity $moduleName]
-all$moduleNames = runDb $$ selectList [] []
+all${moduleName}s :: (MonadReader Config m, MonadIO m) => m [Entity $moduleName]
+all${moduleName}s = runDb $$ selectList [] []
 
-syncDb$moduleNames :: (MonadReader Config m, MonadIO m) => m [Reply]
-syncDb$moduleNames = do
+syncDb${moduleName}s :: (MonadReader Config m, MonadIO m) => m [Reply]
+syncDb${moduleName}s = do
     exists <- runES $$ indexExists indexName
     unless exists $$ sequence_ [makeIndex, makeMapping]
-    objects <- all$moduleNames
-    mapped <- mapM (\x -> put$moduleName (entityVal x) (getRegId x)) objects
+    objects <- all${moduleName}s
+    mapped <- mapM (\x -> put${moduleName} (entityVal x) (getRegId x)) objects
     return mapped
 
-get$moduleName :: (MonadReader Config m, MonadIO m) => T.Text -> m Reply
-get$moduleName dID = runES $$ getDocument indexName mappingName (DocId dID)
+get${moduleName} :: (MonadReader Config m, MonadIO m) => T.Text -> m Reply
+get${moduleName} dID = runES $$ getDocument indexName mappingName (DocId dID)
 
 getRecordId :: Entity $moduleName -> T.Text 
 getRecordId rec = T.pack $$ show $$ fromSqlKey $$ entityKey rec

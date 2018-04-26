@@ -9,7 +9,7 @@ import Servant                  ((:<|>) ((:<|>)), (:~>) (NT),
                                 Proxy (Proxy), Raw, ServantErr, Server,
                                 enter, serve, serveDirectoryFileServer)
 import Servant.Server
-import Api.$moduleName          ($moduleNameAPI, serviceServer)
+import Api.$moduleName          (${moduleName}API, serviceServer)
 import Config                   (AppT (..), Config (..))
 import Control.Category         ((<<<), (>>>))
 
@@ -17,7 +17,7 @@ import Control.Category         ((<<<), (>>>))
 -- a 'Config', we return a WAI 'Application' which any WAI compliant server
 -- can run.
 registrationApp :: Config -> Application
-registrationApp cfg = serve (Proxy :: Proxy $moduleNameAPI) (appToServer cfg)
+registrationApp cfg = serve (Proxy :: Proxy ${moduleName}API) (appToServer cfg)
 
 -- | This functions tells Servant how to run the 'App' monad with our
 -- 'server' function. @NT 'Handler'@ is a natural transformation that
@@ -37,7 +37,7 @@ convertApp cfg = runReaderTNat cfg <<< NT runApp
 -- two different APIs and applications. This is a powerful tool for code
 -- reuse and abstraction! We need to put the 'Raw' endpoint last, since it
 -- always succeeds.
-type AppAPI = $modulenameAPI :<|> Raw
+type AppAPI = ${modulename}API :<|> Raw
 
 appApi :: Proxy AppAPI
 appApi = Proxy

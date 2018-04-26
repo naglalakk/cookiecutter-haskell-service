@@ -9,9 +9,9 @@ import Servant
 
 import Config                      (AppT (..))
 
-type $moduleNameAPI = "test" :> GET '[JSON] String
+type ${moduleName}API = "test" :> GET '[JSON] String
 
-serviceServer :: MonadIO m => ServerT $moduleNameAPI (AppT m)
+serviceServer :: MonadIO m => ServerT ${moduleName}API (AppT m)
 serviceServer = testEndpoint
 
 testEndpoint :: AppT m String
