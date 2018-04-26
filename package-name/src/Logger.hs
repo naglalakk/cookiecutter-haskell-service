@@ -36,7 +36,7 @@ apiFileLogger app req sendResponse = do
         let path = pathInfo req
         resBody <- responseBody rsp
         let level = if sCode >= 400 then errorM else debugM
-        level "RegistrationService" (formatStr 
+        level "$moduleName"         (formatStr 
                                     (show path) 
                                     (show host) 
                                     (show method) 
