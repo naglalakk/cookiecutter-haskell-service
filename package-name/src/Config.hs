@@ -9,7 +9,7 @@ import           Control.Exception                    (throwIO)
 import           Control.Monad.Except                 (ExceptT, MonadError)
 import           Control.Monad.Logger                 (runStdoutLoggingT)
 import           Control.Monad.Reader                 (MonadIO, MonadReader,
-                                                       ReaderT, asks)
+                                                       ReaderT)
 import           Control.Monad.Trans.Class
 import           Control.Monad.Trans.Maybe            (MaybeT (..), runMaybeT)
 import           Data.Monoid                          ((<>))
@@ -18,7 +18,7 @@ import           Database.Persist.Postgresql          (ConnectionPool,
                                                        createPostgresqlPool)
 import           Network.HTTP.Client                  (newManager, defaultManagerSettings)
 import           Network.Wai                          (Middleware)
-import           Network.Wai.Middleware.RequestLogger (logStdout, logStdoutDev)
+import           Network.Wai.Middleware.RequestLogger (logStdoutDev)
 import           Servant                              (ServantErr)
 import           System.Environment                   (lookupEnv)
 import           Database.V5.Bloodhound               (BHEnv, Server(..), mkBHEnv)

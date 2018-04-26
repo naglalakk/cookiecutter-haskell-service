@@ -5,7 +5,7 @@
 module Api (app) where
 
 import Control.Monad.Except
-import Servant                  ((:~>) (NT), enter, server
+import Servant                  ((:~>) (NT), enter, serve,
                                 Proxy (Proxy), ServantErr, Server)
 import Servant.Server
 import Api.$moduleName          (${moduleName}API, serviceServer)
