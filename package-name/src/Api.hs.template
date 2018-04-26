@@ -44,4 +44,4 @@ appApi = Proxy
 
 app :: Config -> Application
 app cfg =
-    serve appApi $ appToServer cfg
+    serve appApi $$ appToServer cfg

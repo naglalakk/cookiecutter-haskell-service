@@ -32,43 +32,53 @@ mappingName :: MappingName
 mappingName = MappingName "yourmapping"
 
 makeIndex :: (MonadReader Config m, MonadIO m) => m Reply
-makeIndex = runES $ createIndex indexSettings indexName
+makeIndex = runES $$ createIndex indexSettings indexName
 
 destroyIndex :: (MonadReader Config m, MonadIO m) => m Reply
-destroyIndex = runES $ deleteIndex indexName
+destroyIndex = runES $$ deleteIndex indexName
 
 makeMapping :: (MonadReader Config m, MonadIO m) => m Reply
-makeMapping = runES $ putMapping indexName mappingName $moduleNameMapping 
+makeMapping = runES $$ putMapping indexName mappingName $moduleNameMapping 
 
 put$moduleName :: (MonadReader Config m, MonadIO m) => $moduleName -> T.Text -> m Reply
 put$moduleName object dID = do
     reply <- get$moduleName dID
-    let sCode = statusCode $ responseStatus reply
+    let sCode = statusCode $$ responseStatus reply
     case sCode of
       -- update
       200 -> update$moduleName object dID
       -- create
-      404 -> runES $ indexDocument indexName mappingName defaultIndexDocumentSettings object $ DocId dID
+      404 -> runES $$ 
+             indexDocument 
+             indexName 
+             mappingName 
+             defaultIndexDocumentSettings 
+             object $$ DocId dID
 
 update$moduleName :: (MonadReader Config m, MonadIO m) => Registration -> T.Text -> m Reply
-update$moduleName object dID = runES $ updateDocument indexName mappingName defaultIndexDocumentSettings object $ DocId dID
+update$moduleName object dID = runES $$ 
+                               updateDocument 
+                               indexName 
+                               mappingName 
+                               defaultIndexDocumentSettings 
+                               object $$ DocId dID
 
 all$moduleNames :: (MonadReader Config m, MonadIO m) => m [Entity $moduleName]
-all$moduleNames = runDb $ selectList [] []
+all$moduleNames = runDb $$ selectList [] []
 
 syncDb$moduleNames :: (MonadReader Config m, MonadIO m) => m [Reply]
 syncDb$moduleNames = do
-    exists <- runES $ indexExists indexName
-    unless exists $ sequence_ [makeIndex, makeMapping]
+    exists <- runES $$ indexExists indexName
+    unless exists $$ sequence_ [makeIndex, makeMapping]
     objects <- all$moduleNames
     mapped <- mapM (\x -> put$moduleName (entityVal x) (getRegId x)) objects
     return mapped
 
 get$moduleName :: (MonadReader Config m, MonadIO m) => T.Text -> m Reply
-get$moduleName dID = runES $ getDocument indexName mappingName (DocId dID)
+get$moduleName dID = runES $$ getDocument indexName mappingName (DocId dID)
 
 getRecordId :: Entity $moduleName -> T.Text 
-getRecordId rec = T.pack $ show $ fromSqlKey $ entityKey rec
+getRecordId rec = T.pack $$ show $$ fromSqlKey $$ entityKey rec
 
 runES :: (MonadReader Config m, MonadIO m) => BH m a -> m a
 runES query = do
