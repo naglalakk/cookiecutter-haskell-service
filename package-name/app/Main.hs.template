@@ -39,7 +39,7 @@ main = do
     -- Set up log file handler
     updateGlobalLogger "$moduleName"
                        (setLevel DEBUG)
-    h <- fileHandler "logs/server.log" DEBUG >>= \lh -> return $
+    h <- fileHandler "logs/server.log" DEBUG >>= \lh -> return $$
          setFormatter lh (simpleLogFormatter "[$$time : $$loggername : $$prio] $$msg")
     updateGlobalLogger "$moduleName" (addHandler h)
 
