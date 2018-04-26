@@ -5,9 +5,8 @@
 module Api (app) where
 
 import Control.Monad.Except
-import Servant                  ((:<|>) ((:<|>)), (:~>) (NT),
-                                Proxy (Proxy), Raw, ServantErr, Server,
-                                enter, serve, serveDirectoryFileServer)
+import Servant                  ((:~>) (NT), enter, server
+                                Proxy (Proxy), ServantErr, Server)
 import Servant.Server
 import Api.$moduleName          (${moduleName}API, serviceServer)
 import Config                   (AppT (..), Config (..))
@@ -37,7 +36,7 @@ convertApp cfg = runReaderTNat cfg <<< NT runApp
 -- two different APIs and applications. This is a powerful tool for code
 -- reuse and abstraction! We need to put the 'Raw' endpoint last, since it
 -- always succeeds.
-type AppAPI = ${moduleName}API :<|> Raw
+type AppAPI = ${moduleName}API
 
 appApi :: Proxy AppAPI
 appApi = Proxy

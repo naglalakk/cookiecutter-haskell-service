@@ -13,14 +13,14 @@
 
 module Models where
 
-import Data.Time                (UTCTime)
 import Control.Monad.Reader     (MonadIO, MonadReader, asks, liftIO)
+import Data.Text                (Text)
+import Data.Time                (UTCTime)
 import Database.Persist.Sql     (SqlPersistT, runMigration, runSqlPool)
 import Database.Persist.TH      (mkMigrate, mkPersist, persistLowerCase,
                                 share, sqlSettings)
 
 import Config                   (Config, configPool)
-import Data.Text                (Text)
 
 share [mkPersist sqlSettings, mkMigrate "migrateAll"] [persistLowerCase|
 $moduleName json

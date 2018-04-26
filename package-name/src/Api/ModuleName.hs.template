@@ -6,14 +6,15 @@
 module Api.$moduleName where
 
 import Servant
+import Control.Monad.IO.Class      (MonadIO)
 
 import Config                      (AppT (..))
 
-type ${moduleName}API = "test" :> GET '[JSON] String
+type ${moduleName}API = "test" :> Get '[JSON] String
 
 serviceServer :: MonadIO m => ServerT ${moduleName}API (AppT m)
 serviceServer = testEndpoint
 
-testEndpoint :: AppT m String
+testEndpoint :: MonadIO m => AppT m String
 testEndpoint = return "Hello World"
 
