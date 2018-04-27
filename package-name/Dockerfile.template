@@ -6,7 +6,7 @@ RUN apt-get install libpq-dev -y
 RUN mkdir -p /code
 RUN mkdir -p /code/logs
 
-ADD registration-service.cabal /code
+ADD ${packageName}.cabal /code
 ADD stack.yaml /code
 WORKDIR /code
 
