@@ -15,7 +15,10 @@ formatStr path host method status req res =
     "Method: " ++ method ++ "\n" ++
     "Status code: " ++ status ++ "\n" ++
     "Request: " ++ req ++ "\n" ++ 
-    "Response: " ++ res ++ "\n"
+    "Response: " ++ response ++ "\n"
+    where
+        response = if length res < 500 then res else take 500 res ++ "...output truncated..."
+
 
 responseBody :: Response -> IO ByteString
 responseBody res =
