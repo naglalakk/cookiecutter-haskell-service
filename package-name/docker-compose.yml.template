@@ -21,4 +21,4 @@ services:
         ports:
             - "9200:9200"
 volumes:
-    db-data:
+    ${packageName}-db-data:
