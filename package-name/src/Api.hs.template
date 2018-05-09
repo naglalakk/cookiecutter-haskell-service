@@ -12,12 +12,6 @@ import Api.$moduleName          (${moduleName}API, serviceServer)
 import Config                   (AppT (..), Config (..))
 import Control.Category         ((<<<), (>>>))
 
--- | This is the function we export to run our 'UserAPI'. Given
--- a 'Config', we return a WAI 'Application' which any WAI compliant server
--- can run.
-registrationApp :: Config -> Application
-registrationApp cfg = serve (Proxy :: Proxy ${moduleName}API) (appToServer cfg)
-
 -- | This functions tells Servant how to run the 'App' monad with our
 -- 'server' function. @NT 'Handler'@ is a natural transformation that
 -- effectively specialises app base monad to IO
