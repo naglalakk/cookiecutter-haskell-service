@@ -26,6 +26,7 @@ library:
   - Api
   - Api.$moduleName
   - Elasticsearch
+  - Utils
   - Logger
   dependencies:
   - base >=4.9 && <5.0
@@ -48,6 +49,7 @@ library:
   - fast-logger
   - unordered-containers
   - time
+  - safe
 executables:
   $packageName:
     main: Main.hs

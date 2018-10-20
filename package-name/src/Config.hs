@@ -26,6 +26,7 @@ import qualified Data.Text                            as T
 import qualified Data.ByteString.Char8                as BS
 
 import           Logger
+import           Utils                                (lookupSetting)
 
 -- | This type represents the effects we want to have for our application.
 -- We wrap the standard Servant monad with 'ReaderT Config', which gives us
@@ -58,13 +59,16 @@ data Environment
     | Production
     deriving (Eq, Show, Read)
 
-defaultConfig :: IO Config
-defaultConfig = do 
-    es <- initES Development
-    pool <- makePool Development 
-    return Config { configPool = pool
-                  , configEnv = Development
-                  , esEnv = es }
+getConfig :: IO Config
+getConfig = do 
+    env    <- lookupSetting "ENV" Development
+    pool   <- makePool env
+    es     <- initES env
+    return Config {
+          configPool    = pool
+        , configEnv	= env
+        , esEnv		= es
+    }
 
 -- | This returns a 'Middleware' based on the environment that we're in.
 setLogger :: Environment -> Middleware
