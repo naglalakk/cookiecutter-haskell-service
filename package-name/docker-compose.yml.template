@@ -12,9 +12,9 @@ services:
         volumes:
             - ./logs:/code/logs
     db:
-        image: postgres
+        image: postgres:9.4
         volumes:
-            - db-data:/var/lib/postgresql/data
+            - ${packageName}-db-data:/var/lib/postgresql/data
         env_file: .env.production
     elasticsearch:
         image: elasticsearch:5.0
