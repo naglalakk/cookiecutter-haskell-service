@@ -13,6 +13,7 @@ WORKDIR /code
 RUN stack install --only-dependencies -j4
 
 ADD . /code
+ADD config/supervisord.conf /etc/supervisor/conf.d/$packageName.conf
 RUN chmod +x config/wait-for-it.sh
 
 RUN stack install
