@@ -2,7 +2,15 @@ version: '3'
 services:
     api:
         build: .
-        command: sh -c "./config/wait-for-it.sh db:5432 -- ./config/wait-for-it.sh elasticsearch:9200 -- $packageName"
+        command:
+            - ./config/wait-for-it.sh 
+            - db:5432 
+            - -- 
+            - ./config/wait-for-it.sh 
+            - elasticsearch:9200 
+            - -- supervisord 
+            - -c 
+            - /code/config/supervisord.conf"
         ports:
             - "8081:8081"
         depends_on:
