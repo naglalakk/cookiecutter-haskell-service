@@ -8,7 +8,8 @@ services:
             - -- 
             - ./config/wait-for-it.sh 
             - elasticsearch:9200 
-            - -- supervisord 
+            - -- 
+            - supervisord 
             - -c 
             - /code/config/supervisord.conf"
         ports:
