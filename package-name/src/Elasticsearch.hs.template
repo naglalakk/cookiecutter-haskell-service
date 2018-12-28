@@ -25,60 +25,55 @@ instance ToJSON  ${moduleName}Mapping
 indexSettings :: IndexSettings
 indexSettings = defaultIndexSettings
 
-indexName :: IndexName
-indexName = IndexName "yourindex"
+makeIndex :: (MonadReader Config m, MonadIO m) => IndexName -> m Reply
+makeIndex name = runES $ createIndex indexSettings name
 
-mappingName :: MappingName
-mappingName = MappingName "yourmapping"
+destroyIndex :: (MonadReader Config m, MonadIO m) => IndexName -> m Reply
+destroyIndex name = runES $ deleteIndex name
 
-makeIndex :: (MonadReader Config m, MonadIO m) => m Reply
-makeIndex = runES $$ createIndex indexSettings indexName
+makeMapping :: (MonadReader Config m, MonadIO m, ToJSON a) => IndexName -> 
+                                                    MappingName -> 
+                                                    a -> 
+                                                    m Reply
+makeMapping ix mn mp = runES $ putMapping ix mn mp 
 
-destroyIndex :: (MonadReader Config m, MonadIO m) => m Reply
-destroyIndex = runES $$ deleteIndex indexName
-
-makeMapping :: (MonadReader Config m, MonadIO m) => m Reply
-makeMapping = runES $$ putMapping indexName mappingName ${moduleName}Mapping 
-
-put${moduleName} :: (MonadReader Config m, MonadIO m) => $moduleName -> T.Text -> m Reply
-put${moduleName} object dID = do
-    reply <- get${moduleName} dID
-    let sCode = statusCode $$ responseStatus reply
+updateOrCreate :: (MonadReader Config m, MonadIO m, ToJSON a) => 
+                                                       IndexName -> 
+                                                       MappingName -> 
+                                                       a -> 
+                                                       T.Text -> 
+                                                       m Reply
+updateOrCreate ixn mn object dID = do
+    reply <- getRecord ixn mn dID
+    let sCode = statusCode $ responseStatus reply
     case sCode of
       -- update
-      200 -> update${moduleName} object dID
+      200 -> updateRecord ixn mn object dID
       -- create
-      404 -> runES $$ 
+      404 -> runES $ 
              indexDocument 
-             indexName 
-             mappingName 
+             ixn
+             mn
              defaultIndexDocumentSettings 
-             object $$ DocId dID
+             object $ DocId dID
 
-update${moduleName} :: (MonadReader Config m, MonadIO m) => $moduleName -> T.Text -> m Reply
-update${moduleName} object dID = runES $$ 
+updateRecord :: (MonadReader Config m, MonadIO m, ToJSON a) => IndexName -> 
+                                                     MappingName -> 
+                                                     a -> 
+                                                     T.Text -> 
+                                                     m Reply
+updateRecord ixn mn object dID = runES $ 
                                updateDocument 
-                               indexName 
-                               mappingName 
+                               ixn
+                               mn
                                defaultIndexDocumentSettings 
-                               object $$ DocId dID
+                               object $ DocId dID
 
-all${moduleName}s :: (MonadReader Config m, MonadIO m) => m [Entity $moduleName]
-all${moduleName}s = runDb $$ selectList [] []
+getRecord :: (MonadReader Config m, MonadIO m) => IndexName -> 
+                                                    MappingName -> 
+                                                    T.Text -> m Reply
+getRecord ixn mn dID = runES $ getDocument ixn mn (DocId dID)
 
-syncDb${moduleName}s :: (MonadReader Config m, MonadIO m) => m [Reply]
-syncDb${moduleName}s = do
-    exists <- runES $$ indexExists indexName
-    unless exists $$ sequence_ [makeIndex, makeMapping]
-    objects <- all${moduleName}s
-    mapped <- mapM (\x -> put${moduleName} (entityVal x) (getRecordID x)) objects
-    return mapped
-
-get${moduleName} :: (MonadReader Config m, MonadIO m) => T.Text -> m Reply
-get${moduleName} dID = runES $$ getDocument indexName mappingName (DocId dID)
-
-getRecordID :: Entity $moduleName -> T.Text 
-getRecordID rec = T.pack $$ show $$ fromSqlKey $$ entityKey rec
 
 runES :: (MonadReader Config m, MonadIO m) => BH m a -> m a
 runES query = do

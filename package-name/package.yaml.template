@@ -7,7 +7,7 @@ author: $author <$email>
 maintainer: $author <$email>
 copyright: 2018 $author
 license: MIT
-git: https://www.github.com/K0TT/$packageName
+git: https://www.gitlab.com/K0TT/$packageName
 dependencies:
 - persistent-postgresql
 - dotenv

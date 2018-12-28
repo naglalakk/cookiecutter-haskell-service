@@ -21,7 +21,6 @@ import Api                                      (app)
 import Config                                   (Config (..), Environment (..),
                                                 makePool, setLogger, initES)
 import Models                                   (doMigrations)
-import Elasticsearch                            (syncDb${moduleName}s)
 import Utils                                    (lookupSetting)
 
 -- | Allow Content-Type header with values other then allowed by simpleCors.
@@ -55,8 +54,5 @@ main = do
 
     -- Database migration
     runSqlPool doMigrations pool
-
-    -- Sync Elasticsearch
-    runReaderT syncDb${moduleName}s cfg
 
     run port $$ logger $$ corsWithContentType $$ app cfg
