@@ -3,5 +3,6 @@ packages:
 - '.'
 extra-deps:
 - servant-options-0.1.0.0
-resolver: lts-10.5
+- bloodhound-0.16.0.0@sha256:b7be3a83e7b914fbe80a9b9de29009ad60cff072f5f8d4af4ee64de8e6406d32
+resolver: lts-13.24
 allow-newer: true

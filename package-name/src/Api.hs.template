@@ -4,33 +4,26 @@
 
 module Api (app) where
 
-import Control.Monad.Except
-import Servant                  ((:~>) (NT), enter, serve,
-                                Proxy (Proxy), ServantErr, Server)
+import Control.Monad.Reader     (runReaderT)
+import Servant                  (Proxy (Proxy)
+                                ,Raw, Server, serve)
+
 import Servant.Server
-import Api.$moduleName          (${moduleName}API, serviceServer)
+import Api.Service              (ServiceAPI
+                                ,serviceApi
+                                ,serviceServer)
 import Config                   (AppT (..), Config (..))
-import Control.Category         ((<<<), (>>>))
 
--- | This functions tells Servant how to run the 'App' monad with our
--- 'server' function. @NT 'Handler'@ is a natural transformation that
--- effectively specialises app base monad to IO
-appToServer :: Config -> Server ${moduleName}API 
-appToServer cfg = enter (convertApp cfg >>> NT Handler) serviceServer
+serviceApp :: Config -> Application
+serviceApp cfg = serve serviceApi (appToServer cfg)
 
--- | This function converts our @'AppT' m@ monad into the @ExceptT ServantErr
--- m@ monad that Servant's 'enter' function needs in order to run the
--- application. The ':~>' type is a natural transformation, or, in
--- non-category theory terms, a function that converts two type
--- constructors without looking at the values in the types.
-convertApp :: Config -> AppT m :~> ExceptT ServantErr m
-convertApp cfg = runReaderTNat cfg <<< NT runApp
+appToServer :: Config -> Server ServiceAPI 
+appToServer cfg = hoistServer serviceApi (convertApp cfg) serviceServer
 
--- | Just like a normal API type, we can use the ':<|>' combinator to unify
--- two different APIs and applications. This is a powerful tool for code
--- reuse and abstraction! We need to put the 'Raw' endpoint last, since it
--- always succeeds.
-type AppAPI = ${moduleName}API
+convertApp :: Config -> AppT IO a -> Handler a
+convertApp cfg appt = Handler $ runReaderT (runApp appt)
+
+type AppAPI = ServiceAPI
 
 appApi :: Proxy AppAPI
 appApi = Proxy

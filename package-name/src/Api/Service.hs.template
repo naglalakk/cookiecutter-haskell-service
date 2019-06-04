@@ -3,18 +3,20 @@
 {-# LANGUAGE TypeOperators     #-}
 {-# LANGUAGE DeriveGeneric     #-}
 
-module Api.$moduleName where
+module Api.Service where
 
 import Servant
 import Control.Monad.IO.Class      (MonadIO)
 
 import Config                      (AppT (..))
 
-type ${moduleName}API = "test" :> Get '[JSON] String
+type ServiceAPI = "test" :> Get '[JSON] String
 
-serviceServer :: MonadIO m => ServerT ${moduleName}API (AppT m)
+serviceApi :: Proxy ServiceAPI
+serviceApi = Proxy
+
+serviceServer :: MonadIO m => ServerT ServiceAPI (AppT m)
 serviceServer = testEndpoint
 
 testEndpoint :: MonadIO m => AppT m String
 testEndpoint = return "Hello World"
-
