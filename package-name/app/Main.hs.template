@@ -34,7 +34,7 @@ corsWithContentType = cors (const $$ Just policy)
 -- initializes the application.
 main :: IO ()
 main = do
-    void $ loadFile defaultConfig
+    void $$ loadFile defaultConfig
 
     -- Set up log file handler
     updateGlobalLogger "$moduleName"
