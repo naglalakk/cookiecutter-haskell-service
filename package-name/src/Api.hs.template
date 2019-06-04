@@ -21,7 +21,7 @@ appToServer :: Config -> Server ServiceAPI
 appToServer cfg = hoistServer serviceApi (convertApp cfg) serviceServer
 
 convertApp :: Config -> AppT IO a -> Handler a
-convertApp cfg appt = Handler $ runReaderT (runApp appt)
+convertApp cfg appt = Handler $$ runReaderT (runApp appt)
 
 type AppAPI = ServiceAPI
 
