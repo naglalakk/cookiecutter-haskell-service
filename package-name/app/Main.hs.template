@@ -2,8 +2,8 @@
 
 module Main where
 
-import qualified Configuration.Dotenv as Dotenv
-import Configuration.Dotenv.Types               (defaultConfig)
+import Control.Monad                            (void)
+import Configuration.Dotenv                     (loadFile, defaultConfig)
 import Control.Monad.Reader                     (runReaderT)
 import Database.Persist.Postgresql              (runSqlPool)
 import Network.Wai                              (Middleware)
@@ -34,7 +34,7 @@ corsWithContentType = cors (const $$ Just policy)
 -- initializes the application.
 main :: IO ()
 main = do
-    Dotenv.loadFile defaultConfig
+    void $ loadFile defaultConfig
 
     -- Set up log file handler
     updateGlobalLogger "$moduleName"
