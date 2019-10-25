@@ -18,7 +18,7 @@ import System.Log.Handler.Simple
 import System.Log.Formatter
 
 
-import Api                                      (app)
+import API                                      (app)
 import Config                                   (Config (..), Environment (..),
                                                 makePool, setLogger, initES)
 import Models                                   (doMigrations)
