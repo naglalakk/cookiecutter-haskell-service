@@ -27,8 +27,8 @@ library:
   exposed-modules:
   - Config
   - Models
-  - Api
-  - Api.Service
+  - API
+  - API.Service
   - Elasticsearch
   - Utils
   - Logger

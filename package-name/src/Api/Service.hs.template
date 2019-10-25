@@ -3,7 +3,7 @@
 {-# LANGUAGE TypeOperators     #-}
 {-# LANGUAGE DeriveGeneric     #-}
 
-module Api.Service where
+module API.Service where
 
 import Servant
 import Control.Monad.IO.Class      (MonadIO)
@@ -12,8 +12,8 @@ import Config                      (AppT (..))
 
 type ServiceAPI = "test" :> Get '[JSON] String
 
-serviceApi :: Proxy ServiceAPI
-serviceApi = Proxy
+serviceAPI :: Proxy ServiceAPI
+serviceAPI = Proxy
 
 serviceServer :: MonadIO m => ServerT ServiceAPI (AppT m)
 serviceServer = testEndpoint

@@ -2,32 +2,32 @@
 {-# LANGUAGE TypeOperators     #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Api (app) where
+module API (app) where
 
 import Control.Monad.Reader     (runReaderT)
 import Servant                  (Proxy (Proxy)
                                 ,Raw, Server, serve)
 
 import Servant.Server
-import Api.Service              (ServiceAPI
-                                ,serviceApi
+import API.Service              (ServiceAPI
+                                ,serviceAPI
                                 ,serviceServer)
 import Config                   (AppT (..), Config (..))
 
 serviceApp :: Config -> Application
-serviceApp cfg = serve serviceApi (appToServer cfg)
+serviceApp cfg = serve serviceAPI (appToServer cfg)
 
 appToServer :: Config -> Server ServiceAPI 
-appToServer cfg = hoistServer serviceApi (convertApp cfg) serviceServer
+appToServer cfg = hoistServer serviceAPI (convertApp cfg) serviceServer
 
 convertApp :: Config -> AppT IO a -> Handler a
 convertApp cfg appt = Handler $$ runReaderT (runApp appt) cfg
 
 type AppAPI = ServiceAPI
 
-appApi :: Proxy AppAPI
-appApi = Proxy
+appAPI :: Proxy AppAPI
+appAPI = Proxy
 
 app :: Config -> Application
 app cfg =
-    serve appApi $$ appToServer cfg
+    serve appAPI $$ appToServer cfg
