@@ -1,5 +1,7 @@
 name: $packageName
 version: '0.0.0.1'
+verbatim: 
+  cabal-version: 3.0
 synopsis: $moduleName service
 description: $moduleName Service
 category: Web
@@ -9,6 +11,8 @@ copyright: 2018 $author
 license: MIT
 git: https://www.gitlab.com/K0TT/$packageName
 dependencies:
+- persistent ==2.9.2
+- persistent-template ==2.6.0
 - persistent-postgresql
 - dotenv
 - wai-extra
@@ -31,14 +35,12 @@ library:
   dependencies:
   - base >=4.9 && <5.0
   - aeson
-  - bloodhound
+  - bloodhound ==0.16.0.0
   - bytestring
   - http-client
   - http-types
   - monad-control
   - monad-logger
-  - persistent
-  - persistent-template
   - servant
   - servant-server
   - transformers

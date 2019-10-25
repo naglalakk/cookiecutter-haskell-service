@@ -14,7 +14,6 @@ import Network.HTTP.Client         (responseStatus)
 import Network.HTTP.Types          (statusCode)
 import qualified Data.Text         as T
 
-import Models                      ($moduleName(..), runDb)
 import Config                      (Config, esEnv)
 
 data ${moduleName}Mapping = ${moduleName}Mapping deriving (Eq, Show, Generic)

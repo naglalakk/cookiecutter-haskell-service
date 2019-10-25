@@ -19,7 +19,7 @@ import           Database.Persist.Postgresql          (ConnectionPool,
 import           Network.HTTP.Client                  (newManager, defaultManagerSettings)
 import           Network.Wai                          (Middleware)
 import           Network.Wai.Middleware.RequestLogger (logStdoutDev)
-import           Servant                              (ServantErr)
+import           Servant.Server                       (ServerError)
 import           System.Environment                   (lookupEnv)
 import           Database.V5.Bloodhound               (BHEnv, Server(..), mkBHEnv)
 import qualified Data.Text                            as T
@@ -37,9 +37,9 @@ import           Utils                                (lookupSetting)
 -- monad stack without having to modify code that uses the current layout.
 newtype AppT m a
     = AppT
-    { runApp :: ReaderT Config (ExceptT ServantErr m) a
+    { runApp :: ReaderT Config (ExceptT ServerError m) a
     } deriving ( Functor, Applicative, Monad, MonadReader Config,
-                 MonadError ServantErr, MonadIO)
+                 MonadError ServerError, MonadIO)
 
 type App = AppT IO
 
@@ -60,14 +60,14 @@ data Environment
     deriving (Eq, Show, Read)
 
 getConfig :: IO Config
-getConfig = do 
+getConfig = do
     env    <- lookupSetting "ENV" Development
     pool   <- makePool env
     es     <- initES env
     return Config {
           configPool    = pool
-        , configEnv	= env
-        , esEnv		= es
+        , configEnv     = env
+        , esEnv         = es
     }
 
 -- | This returns a 'Middleware' based on the environment that we're in.
