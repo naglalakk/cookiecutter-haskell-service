@@ -1,0 +1,66 @@
+name: {{ cookiecutter.package_name }}
+version: {{ cookiecutter.version }}
+synopsis: {{ cookiecutter.description }}
+description: {{ cookiecutter.description }}
+category: API
+author: {{ cookiecutter.author }} <{{ cookiecutter.email }}>
+maintainer: {{ cookiecutter.author }} <{{ cookiecutter.email }}>
+copyright: {{ cookiecutter.year }} {{ cookiecutter.author }}
+{% if cookiecutter.license_file == 'y' %}license: MIT{% else %}license: NONE{% endif %}
+{% if cookiecutter.git_url %}git: {{ cookiecutter.git_url}}{% endif %}
+dependencies:
+- base >=4.9 && <5.0
+- persistent ==2.9.2
+- persistent-template ==2.6.0
+- persistent-postgresql
+- dotenv
+- wai-extra
+- wai-cors
+- mtl
+- hslogger
+- fast-logger
+- monad-logger
+- http-types
+- optparse-applicative
+- utf8-string
+- base64-bytestring
+- hedis
+- time
+- safe
+- wai
+- warp
+- bcrypt
+- text
+- bytestring
+library:
+  source-dirs: src
+  ghc-options: -fwarn-unused-imports
+  exposed-modules:
+  - Api
+  - Api.Service
+  - Cache
+  - Cli
+  - Config
+  - Db
+  - Elasticsearch
+  - Logger
+  - Models
+  - Model.User
+  - Utils
+  dependencies:
+  - aeson
+  - bloodhound
+  - http-client
+  - monad-control
+  - servant
+  - servant-auth
+  - servant-server
+  - transformers
+  - containers
+  - unordered-containers
+executables:
+  {{ cookiecutter.package_name }}:
+    main: app/Main.hs
+    ghc-options: -fwarn-unused-imports
+    dependencies:
+    - {{ cookiecutter.package_name }}

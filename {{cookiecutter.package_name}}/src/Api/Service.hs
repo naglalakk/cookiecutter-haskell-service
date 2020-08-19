@@ -3,7 +3,7 @@
 {-# LANGUAGE TypeOperators     #-}
 {-# LANGUAGE DeriveGeneric     #-}
 
-module API.Service where
+module Api.Service where
 
 import Servant
 import Control.Monad.IO.Class      (MonadIO)

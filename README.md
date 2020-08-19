@@ -1,2 +1,2 @@
-hi-haskell-service
-==================
+cookiecutter-haskell-service
+============================

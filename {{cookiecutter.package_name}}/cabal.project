@@ -1,0 +1,7 @@
+source-repository-package
+    type: git
+    location: https://github.com/naglalakk/bloodhound
+    tag: afdebd027dacae5ded03215e2b085daf6fd77b59
+
+packages: 
+    ./{{ cookiecutter.package_name}}.cabal

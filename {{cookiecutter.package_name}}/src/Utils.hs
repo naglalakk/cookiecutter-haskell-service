@@ -1,6 +1,5 @@
 module Utils where
 
-
 import System.Environment          (lookupEnv)
 import Safe                        (readMay)
 
@@ -16,7 +15,7 @@ lookupSetting env def = do
             maybe (handleFailedRead str) return (readMay str)
   where
     handleFailedRead str =
-        error $$ mconcat
+        error $ mconcat
             [ "Failed to read [["
             , str
             , "]] for environment variable "

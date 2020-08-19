@@ -1,0 +1,11 @@
+{
+    "package_name" : "untitled",
+    "description"  : "",
+    "version": "0.0.1.0",
+    "author": "Donna",
+    "email": "donna@kott.is",
+    "git_url" : "",
+    "year": "2020",
+    "license_file" : "y",
+    "nix" : "y"
+}
