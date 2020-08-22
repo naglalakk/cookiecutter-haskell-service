@@ -8,15 +8,15 @@ module Api.Service where
 import Servant
 import Control.Monad.IO.Class      (MonadIO)
 
+import Api.User                    (UserAPI
+                                   ,userServer)
 import Config                      (AppT (..))
 
-type ServiceAPI = "test" :> Get '[JSON] String
+type ServiceAPI = UserAPI
 
 serviceAPI :: Proxy ServiceAPI
 serviceAPI = Proxy
 
 serviceServer :: MonadIO m => ServerT ServiceAPI (AppT m)
-serviceServer = testEndpoint
+serviceServer = userServer
 
-testEndpoint :: MonadIO m => AppT m String
-testEndpoint = return "Hello World"
