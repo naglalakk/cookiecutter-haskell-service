@@ -9,9 +9,9 @@ copyright: {{ cookiecutter.year }} {{ cookiecutter.author }}
 {% if cookiecutter.license_file == 'y' %}license: MIT{% else %}license: NONE{% endif %}
 {% if cookiecutter.git_url %}git: {{ cookiecutter.git_url}}{% endif %}
 dependencies:
-- base >=4.9 && <5.0
-- persistent ==2.9.2
-- persistent-template ==2.6.0
+- base >=4.13 && <5.0
+- persistent
+- persistent-template
 - persistent-postgresql
 - dotenv
 - wai-extra
@@ -62,6 +62,9 @@ library:
 executables:
   {{ cookiecutter.package_name }}:
     main: app/Main.hs
-    ghc-options: -fwarn-unused-imports
+    ghc-options: 
+    - -fwarn-unused-imports
+    - -fwrite-ide-info
+    - -hiedir=./hie
     dependencies:
     - {{ cookiecutter.package_name }}
