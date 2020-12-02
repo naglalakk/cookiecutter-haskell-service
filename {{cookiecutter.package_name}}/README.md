@@ -7,7 +7,7 @@
     cabal configure && cabal build
 
     -- run API. defaults to port :8081
-    cabal exec donnabot-service run 
+    cabal exec {{ cookiecutter.package_name }} run
 
 ### Commands
 
