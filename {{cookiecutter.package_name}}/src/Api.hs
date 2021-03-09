@@ -1,53 +1,57 @@
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE FlexibleContexts #-}
-{-# LANGUAGE TypeOperators #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE TypeOperators #-}
 
 module Api
-  ( app
+  ( app,
   )
 where
 
-import           Control.Monad.Reader           ( runReaderT )
-import           Crypto.BCrypt                  ( validatePassword )
-import           Data.Aeson
-import qualified Data.ByteString               as B
-import qualified Data.ByteString.Lazy          as BL
-import qualified Data.Text.Encoding            as TE
-import           Database.Persist.Sql           ( Entity(..)
-                                                , (==.)
-                                                , runSqlPool
-                                                , selectFirst
-                                                )
-import qualified Database.Redis                as Redis
-import           Servant
+import Api.Service
+  ( ServiceAPI,
+    serviceAPI,
+    serviceServer,
+  )
+import Cache (runCache)
+import Config
+  ( AppT (..),
+    Config (..),
+    Environment (..),
+    getConfig,
+  )
+import Control.Monad.Reader (runReaderT)
+import Crypto.BCrypt (validatePassword)
+import Data.Aeson
+import qualified Data.ByteString as B
+import qualified Data.ByteString.Lazy as BL
+import qualified Data.Text.Encoding as TE
+import Database.Persist.Sql
+  ( (==.),
+    Entity (..),
+    runSqlPool,
+    selectFirst,
+  )
+import qualified Database.Redis as Redis
+import Model.User
+  ( EntityField
+      ( UserIsAdmin,
+        UserUsername
+      ),
+    User (..),
+  )
+import Servant
 
-import           Api.Service                    ( ServiceAPI
-                                                , serviceAPI
-                                                , serviceServer
-                                                )
-import           Cache                          ( runCache )
-import           Config                         ( AppT(..)
-                                                , Config(..)
-                                                , Environment(..)
-                                                , getConfig
-                                                )
-import           Model.User                     ( User(..)
-                                                , EntityField
-                                                  ( UserIsAdmin
-                                                  , UserUsername
-                                                  )
-                                                )
-
-dbAuthCheck
-  :: Config -> B.ByteString -> B.ByteString -> IO (Maybe (Entity User))
+dbAuthCheck ::
+  Config -> B.ByteString -> B.ByteString -> IO (Maybe (Entity User))
 dbAuthCheck config username password = do
-  user <- runSqlPool
-    (selectFirst
-      [UserUsername ==. (TE.decodeUtf8 username), UserIsAdmin ==. True]
-      []
-    )
-    (configPool config)
+  user <-
+    runSqlPool
+      ( selectFirst
+          [UserUsername ==. TE.decodeUtf8 username, UserIsAdmin ==. True]
+          []
+      )
+      (configPool config)
   case user of
     Just (Entity userId user) -> do
       let valid = validatePassword (TE.encodeUtf8 $ userPassword user) password
@@ -56,8 +60,8 @@ dbAuthCheck config username password = do
           -- Cache user
           let cacheStr = encode $ Entity userId user
           runReaderT
-            (runCache $ do
-              Redis.set username $ BL.toStrict cacheStr
+            ( runCache $ do
+                Redis.set username $ BL.toStrict cacheStr
             )
             config
           return $ Just $ Entity userId user
@@ -67,7 +71,7 @@ dbAuthCheck config username password = do
 authCheck :: BasicAuthCheck (Entity User)
 authCheck =
   let check (BasicAuthData username password) = do
-        config     <- getConfig
+        config <- getConfig
         cachedUser <- runReaderT (runCache $ Redis.get username) config
         case cachedUser of
           Right usr -> do
@@ -76,39 +80,40 @@ authCheck =
                 let decodedUser = decode $ BL.fromStrict u
                 case decodedUser of
                   Just entityUser -> return $ Authorized entityUser
-                  Nothing         -> do
+                  Nothing -> do
                     dbCheck <- dbAuthCheck config username password
                     case dbCheck of
                       Just authUser -> return $ Authorized authUser
-                      Nothing       -> return Unauthorized
+                      Nothing -> return Unauthorized
               Nothing -> do
                 dbCheck <- dbAuthCheck config username password
                 case dbCheck of
                   Just authUser -> return $ Authorized authUser
-                  Nothing       -> return Unauthorized
+                  Nothing -> return Unauthorized
           Left err -> do
             dbCheck <- dbAuthCheck config username password
             case dbCheck of
               Just authUser -> return $ Authorized authUser
-              Nothing       -> return Unauthorized
-  in  BasicAuthCheck check
+              Nothing -> return Unauthorized
+   in BasicAuthCheck check
 
 basicAuthServerContext :: Context (BasicAuthCheck (Entity User) ': '[])
 basicAuthServerContext = authCheck :. EmptyContext
 
 appToServer :: Config -> Server ServiceAPI
-appToServer cfg = hoistServerWithContext
-  serviceAPI
-  (Proxy :: Proxy '[BasicAuthCheck (Entity User)])
-  (convertApp cfg)
-  serviceServer
+appToServer cfg =
+  hoistServerWithContext
+    serviceAPI
+    (Proxy :: Proxy '[BasicAuthCheck (Entity User)])
+    (convertApp cfg)
+    serviceServer
 
 convertApp :: Config -> AppT IO a -> Handler a
 convertApp cfg appt = Handler $ runReaderT (runApp appt) cfg
 
 files :: Environment -> Server Raw
 files env = case env of
-  Production  -> serveDirectoryFileServer "nofiles"
+  Production -> serveDirectoryFileServer "nofiles"
   Development -> serveDirectoryFileServer "static"
 
 type AppAPI = ServiceAPI :<|> "static" :> Raw
@@ -117,6 +122,8 @@ appAPI :: Proxy AppAPI
 appAPI = Proxy
 
 app :: Config -> Application
-app cfg = serveWithContext appAPI
-                           basicAuthServerContext
-                           (appToServer cfg :<|> (files $ configEnv cfg))
+app cfg =
+  serveWithContext
+    appAPI
+    basicAuthServerContext
+    (appToServer cfg :<|> files (configEnv cfg))

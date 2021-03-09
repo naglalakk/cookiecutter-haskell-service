@@ -32,6 +32,11 @@ dependencies:
 - bcrypt
 - text
 - bytestring
+- monad-logger
+- co-log
+- typerep-map
+- raven-haskell
+- http-client-tls
 library:
   source-dirs: src
   ghc-options: -fwarn-unused-imports
@@ -47,6 +52,7 @@ library:
   - Logger
   - Models
   - Model.User
+  - Sentry
   - Utils
   dependencies:
   - aeson

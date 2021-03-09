@@ -1,10 +1,10 @@
 { pkgs ? import ./packages.nix {}, mkDerivation
 , aeson, base, base64-bytestring, bcrypt, bloodhound
-, bytestring, containers, dotenv, fast-logger, hedis, hpack
-, hslogger, http-client, http-types, monad-control, monad-logger
+, bytestring, co-log, containers, dotenv, fast-logger, hedis, hpack
+, hslogger, http-client, http-client-tls, http-types, monad-control, monad-logger
 , mtl, optparse-applicative, persistent, persistent-postgresql
-, persistent-template, safe, servant, servant-auth, servant-server
-, stdenv, text, time, transformers, unordered-containers
+, persistent-template, raven-haskell, safe, servant, servant-auth, servant-server
+, stdenv, text, time, transformers, typerep-map, unordered-containers
 , utf8-string, wai, wai-cors, wai-extra, warp
 }:
 let 
@@ -25,17 +25,17 @@ in
     doHaddock = false;
     libraryHaskellDepends = [
       aeson base base64-bytestring bcrypt bloodhound bytestring
-      containers dotenv fast-logger hedis hslogger http-client http-types
+      co-log containers dotenv fast-logger hedis hslogger http-client http-client-tls http-types
       monad-control monad-logger mtl optparse-applicative persistent
-      persistent-postgresql persistent-template safe servant servant-auth
-      servant-server text time transformers unordered-containers
+      persistent-postgresql persistent-template raven-haskell safe servant servant-auth
+      servant-server text time transformers typerep-map unordered-containers
       utf8-string wai wai-cors wai-extra warp
     ];
     libraryToolDepends = [ hpack ];
     executableHaskellDepends = [
       base base64-bytestring bcrypt bytestring dotenv fast-logger hedis
-      hslogger http-types monad-logger mtl optparse-applicative
-      persistent persistent-postgresql persistent-template safe text time
+      hslogger http-client-tls http-types monad-logger mtl optparse-applicative
+      persistent persistent-postgresql persistent-template raven-haskell safe text time
       utf8-string wai wai-cors wai-extra warp
     ];
     prePatch = "hpack";

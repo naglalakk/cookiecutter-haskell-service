@@ -40,3 +40,4 @@ certs
 logs
 
 result/
+dist-newstyle/

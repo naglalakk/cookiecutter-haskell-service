@@ -89,3 +89,7 @@ Elasticsearch URL (default: localhost:9200)
 **REDIS_HOST**
 
 Redis host (default: localhost)
+
+**SENTRY_URL**
+
+SENTRY DNS URL to handle exceptions.
